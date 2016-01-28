@@ -6,7 +6,7 @@ ThisData.NET is a .NET / C# client for the ThisData Login Intelligence API (http
 ## Usage
 Install the [latest ThisData.NET package](https://www.nuget.org/packages/ThisData.NET) from Nuget
 
-Add the reference to the Nuget package
+Add the reference to the ThisData Nuget package
 ```
 using ThisData;
 ```
@@ -18,7 +18,7 @@ var client = new ThisData.Client("YOUR API KEY FROM THISDATA");
 client.Login("user123", "123.123.123.123", "Rich Chetwynd", "rich123@thisdata.com", Request.UserAgent);
 ```
 
-You can fire and forget and leave it there of if you 
+You can fire and forget and leave it there **or** if you 
 want to track the response for debugging etc then do this
 ```
 var result = await client.Login("user123", "123.123.123.123", "Rich Chetwynd", "rich123@thisdata.com", Request.UserAgent);
