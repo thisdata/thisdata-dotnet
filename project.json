@@ -1,9 +1,9 @@
 {
-  "version": "1.0.7",
+  "version": "1.0.10",
   "description": "Login Intelligence API",
   "authors": [ "ThisData" ],
   "tags": ["security","login","analytics","anomaly detection"],
-  "projectUrl": "",
+  "projectUrl": "https://github.com/revertio/thisdata-dotnet",
   "licenseUrl": "",
   "tooling": {
     "defaultNamespace": "ThisData"
