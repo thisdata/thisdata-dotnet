@@ -1,6 +1,6 @@
 {
   "version": "1.0.10",
-  "description": "Login Intelligence API",
+  "description": "The .net client for the ThisData Login Intelligence API. Add an extra layer of security to your app and get notified of suspicious login behaviour",
   "authors": [ "ThisData" ],
   "tags": ["security","login","analytics","anomaly detection"],
   "projectUrl": "https://github.com/revertio/thisdata-dotnet",
