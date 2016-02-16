@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>ThisData.Net</id>
+    <version>1.0.17</version>
+    <authors>ThisData</authors>
+    <owners>ThisData</owners>
+    <licenseUrl>https://github.com/revertio/thisdata-dotnet</licenseUrl>
+    <projectUrl>https://github.com/revertio/thisdata-dotnet</projectUrl>
+    <iconUrl>https://thisdata.com/favicon.ico</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The .net client for the ThisData Login Intelligence API. Add an extra layer of security to your app and get notified of suspicious login behaviour</description>
+    <releaseNotes>This version is for Visual Studio 2012</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>security login analytics anomaly detection</tags>
+    <dependencies>
+      <dependency id="Microsoft.Net.Http" version="2.2.29" />
+      <dependency id="Newtonsoft.Json" version="8.0.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin/Release/net45/ThisData.NET.dll" target="lib\net45" />
+  </files>  
+</package>
