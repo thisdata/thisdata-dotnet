@@ -2,6 +2,6 @@ namespace ThisData
 {
     public class Defaults
     {
-        public static string Host = "https://api.thisdata.com/v1/";
+        public static string ApiEndpoint = "https://api.thisdata.com/v1/events.json";
     }
 }
