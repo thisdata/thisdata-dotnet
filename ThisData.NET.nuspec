@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ThisData.Net</id>
-    <version>1.0.22</version>
+    <version>1.0.23</version>
     <authors>ThisData</authors>
     <owners>ThisData</owners>
     <licenseUrl>https://github.com/revertio/thisdata-dotnet</licenseUrl>
