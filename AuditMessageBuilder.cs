@@ -24,7 +24,7 @@ namespace ThisData
             {
                 message.UserAgent = request.UserAgent;
                 message.IPAddress = GetIpAddress(request);
-                message.User = GetUserDetails(request, name, email, mobile);
+                message.User = GetUserDetails(request, userId, name, email, mobile);
             }
             catch (Exception e)
             {

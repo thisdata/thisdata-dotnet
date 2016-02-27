@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ThisData.Net</id>
-    <version>1.0.23</version>
+    <version>1.1.0</version>
     <authors>ThisData</authors>
     <owners>ThisData</owners>
     <licenseUrl>https://github.com/revertio/thisdata-dotnet</licenseUrl>
@@ -10,7 +10,7 @@
     <iconUrl>https://thisdata.com/favicon.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>The .net client for the ThisData Login Intelligence API. Add an extra layer of security to your app and get notified of suspicious login behaviour</description>
-    <releaseNotes>This version is for Visual Studio 2012</releaseNotes>
+    <releaseNotes>Supports .Net frame 4.0 onwards</releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>security login analytics anomaly detection</tags>
   </metadata> 

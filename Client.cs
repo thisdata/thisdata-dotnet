@@ -31,7 +31,7 @@ namespace ThisData
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
         public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "")
         {
-            _currentAuditMessage = BuildAuditMessage(verb);
+            _currentAuditMessage = BuildAuditMessage(verb, userId, name, email, mobile);
             Send(_currentAuditMessage);
         }
 
@@ -45,7 +45,7 @@ namespace ThisData
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
         public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "")
         {
-            AuditMessage message = BuildAuditMessage(verb);
+            AuditMessage message = BuildAuditMessage(verb, userId, name, email, mobile);
 
             ThreadPool.QueueUserWorkItem(c =>
             {
@@ -63,7 +63,7 @@ namespace ThisData
 
         #region Private
 
-        private AuditMessage BuildAuditMessage(string verb, string userId = "", string name = "", string email = "")
+        private AuditMessage BuildAuditMessage(string verb, string userId = "", string name = "", string email = "", string mobile = "")
         {
             AuditMessage message = null;
             HttpContext context = HttpContext.Current;
@@ -81,7 +81,7 @@ namespace ThisData
 
                 if (request != null)
                 {
-                    message = AuditMessageBuilder.Build(request, verb, name, email);
+                    message = AuditMessageBuilder.Build(request, verb, userId, name, email, mobile);
                 }
             }
 
