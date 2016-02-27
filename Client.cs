@@ -20,14 +20,30 @@ namespace ThisData
         {
             _apiKey = apiKey;
         }
-        
-        public void Track(string verb)
+
+        /// <summary>
+        /// Tracks an event to the ThisData API
+        /// </summary>
+        /// <param name="verb">The action taken by the user. eg. log-in</param>
+        /// <param name="userId">A unique identifier for the user. If omitted LogonUserIdentity.Name will be used</param>
+        /// <param name="name">The full name of the user</param>
+        /// <param name="email">The users email address for sending notifications</param>
+        /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
+        public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "")
         {
             _currentAuditMessage = BuildAuditMessage(verb);
             Send(_currentAuditMessage);
         }
 
-        public void TrackAsync(string verb)
+        /// <summary>
+        /// Asyncronously tracks an event to the ThisData API
+        /// </summary>
+        /// <param name="verb">The action taken by the user. eg. log-in</param>
+        /// <param name="userId">A unique identifier for the user. If omitted LogonUserIdentity.Name will be used</param>
+        /// <param name="name">The full name of the user</param>
+        /// <param name="email">The users email address for sending notifications</param>
+        /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
+        public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "")
         {
             AuditMessage message = BuildAuditMessage(verb);
 
@@ -45,7 +61,9 @@ namespace ThisData
             });
         }
 
-        private AuditMessage BuildAuditMessage(string verb)
+        #region Private
+
+        private AuditMessage BuildAuditMessage(string verb, string userId = "", string name = "", string email = "")
         {
             AuditMessage message = null;
             HttpContext context = HttpContext.Current;
@@ -63,7 +81,7 @@ namespace ThisData
 
                 if (request != null)
                 {
-                    message = AuditMessageBuilder.Build(request, verb);
+                    message = AuditMessageBuilder.Build(request, verb, name, email);
                 }
             }
 
@@ -108,5 +126,7 @@ namespace ThisData
                 }
             }
         }
+
+        #endregion
     }
 }

@@ -14,7 +14,7 @@ namespace ThisData
     {
         private static readonly Regex IpAddressRegex = new Regex(@"\A(?:\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b)(:[1-9][0-9]{0,4})?\z", RegexOptions.Compiled);
 
-        public static AuditMessage Build(HttpRequest request, string verb)
+        public static AuditMessage Build(HttpRequest request, string verb, string userId = "", string name = "", string email = "", string mobile = "")
         {
             AuditMessage message = new AuditMessage();
 
@@ -24,7 +24,7 @@ namespace ThisData
             {
                 message.UserAgent = request.UserAgent;
                 message.IPAddress = GetIpAddress(request);
-                message.User = GetUserDetails(request);
+                message.User = GetUserDetails(request, name, email, mobile);
             }
             catch (Exception e)
             {
@@ -34,13 +34,16 @@ namespace ThisData
             return message;
         }
 
-        private static UserDetails GetUserDetails(HttpRequest request)
+        private static UserDetails GetUserDetails(HttpRequest request, string userId = "", string name = "", string email = "", string mobile = "")
         {
             UserDetails user = new UserDetails();
 
             try
             {
-                user.Id = request.LogonUserIdentity.Name;
+                user.Id = String.IsNullOrEmpty(userId) ? request.LogonUserIdentity.Name : userId;
+                user.Name = name;
+                user.Email = email;
+                user.Mobile = mobile;
             }
             catch (Exception e)
             {
