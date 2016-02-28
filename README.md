@@ -3,32 +3,30 @@ ThisData.NET
 
 ThisData.NET is a .NET / C# client for the ThisData Login Intelligence API (https://thisdata.com).
 
-## Usage
+## Setup
 Install the [latest ThisData.NET package](https://www.nuget.org/packages/ThisData.NET) from Nuget
-
-Add the reference to the ThisData Nuget package
 ```
-using ThisData;
+Install-Package ThisData.Net
 ```
 
-Find the point in your code just after a login is authenticated 
-and add the following async post to the ThisData API
+Create a ThisData client
 ```
 var client = new ThisData.Client("YOUR API KEY FROM THISDATA");
-client.Login("user123", "123.123.123.123", "Rich Chetwynd", "rich123@thisdata.com", Request.UserAgent);
 ```
 
-You can fire and forget and leave it there **or** if you 
-want to track the response for debugging etc then do this
+## Track Events
+Find the point in your code just after a login success, failure or password reset .
+We recommend you use the `TrackAsync` method to send data to the ThisData API 
 ```
-var result = await client.Login("user123", "123.123.123.123", "Rich Chetwynd", "rich123@thisdata.com", Request.UserAgent);
+client.TrackAsync("log-in", userId: "john123455", name: "John Titor", email: "john+titor@thisdata.com");
 ```
 
-It returns an HttpResponseMessage so you can access StatusCode etc
-```
-var statusCode = result.StatusCode
-var responseBody = await result.Content.ReadAsStringAsync()
-```
+### Optional params
+* userId - string - A unique identifier for the user
+* name - string The full name of the user
+* email - string - An email address for sending unusual activity alerts to
+* mobile - E.164 format - An mobile number for sending unusual activity SMS alerts to. e.g. +15555555555
+
 
 
 ## API Documentation
