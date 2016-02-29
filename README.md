@@ -22,16 +22,16 @@ client.TrackAsync("log-in", userId: "john123455", name: "John Titor", email: "jo
 ```
 
 ### Optional params
-* userId - string - A unique identifier for the user
-* name - string The full name of the user
-* email - string - An email address for sending unusual activity alerts to
-* mobile - E.164 format - An mobile number for sending unusual activity SMS alerts to. e.g. +15555555555
+* `userId` - string - A unique identifier for the user
+* `name` - string The full name of the user
+* `email` - string - An email address for sending unusual activity alerts to
+* `mobile` - E.164 format - An mobile number for sending unusual activity SMS alerts to. e.g. +15555555555
 
 ### Event Types
-* log-in - A successful login
-* log-in-denied - A failed login
-* password-reset-attempt - Requested to change password
-* password-reset-success - Successfully changed password
+* `log-in` - A successful login
+* `log-in-denied` - A failed login
+* `password-reset-attempt` - Requested to change password
+* `password-reset-success` - Successfully changed password
 
 ## API Documentation
 
