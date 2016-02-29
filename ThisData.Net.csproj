@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="Defaults.cs" />
-    <Compile Include="Helpers\IpAddress.cs" />
+    <None Include="LICENSE" />
     <Compile Include="Models\AuditMessage.cs" />
     <Compile Include="Models\UserDetails.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
