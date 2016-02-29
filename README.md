@@ -37,25 +37,3 @@ client.TrackAsync("log-in", userId: "john123455", name: "John Titor", email: "jo
 
 API Documentation is available at [http://help.thisdata.com/docs/apiv1events](http://help.thisdata.com/docs/apiv1events).
 
-## License
-
-```
-            .-::-.                      
-        `-:++++++++:-`                  
-    .-/+++/-`:-`-/+++/-.               
-  .:+++/:.    :-    .:++++:.            
-.+++/-`       :-       `-/+++`          
-/++.        `-//.`        .++:          
-/++.     `-/++++++/-`     .++:          
-/++.     /++++++++++:     .++:          
-/++.     /++  MIT ++/     .++:          
-/++.     /++++++++++:     .++:          
-/++.     `-/++++++/-`     .++:          
-:++.        `.//.`        .++:          
-`+++/-`       :-       `-/+++`          
-  .:++++:.    :-    .:++++:.            
-    .-/+++/-`:-`-/+++/-.               
-        `-:++++++++:-`                  
-            .-::-.                      
-                                    
-```
