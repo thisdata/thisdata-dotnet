@@ -92,6 +92,16 @@ namespace ThisData
                 {
                     strIp = request.UserHostAddress;
                 }
+
+                // make sure we strip off port number if exists
+                if (!String.IsNullOrEmpty(strIp))
+                {
+                    string[] ipParts = strIp.Split(':');
+                    if (ipParts.Length > 1)
+                    {
+                        strIp = ipParts[0];
+                    }
+                }
             }
             catch (Exception ex)
             {
