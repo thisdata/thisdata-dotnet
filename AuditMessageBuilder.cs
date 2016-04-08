@@ -14,7 +14,18 @@ namespace ThisData
     {
         private static readonly Regex IpAddressRegex = new Regex(@"\A(?:\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b)(:[1-9][0-9]{0,4})?\z", RegexOptions.Compiled);
 
-        public static AuditMessage Build(HttpRequest request, string verb, string userId = "", string name = "", string email = "", string mobile = "")
+        /// <summary>
+        /// Formats a message to send to the ThisData API
+        /// </summary>
+        /// <param name="request">HttpRequest object for the incoming request</param>
+        /// <param name="verb">The action taken by the user. eg. log-in</param>
+        /// <param name="userId">A unique identifier for the user. If omitted LogonUserIdentity.Name will be used</param>
+        /// <param name="name">The full name of the user</param>
+        /// <param name="email">The users email address for sending notifications</param>
+        /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
+        /// <param name="source">Used to indicate the source of the event and override company or app name in audit log and notifications</param>
+        /// <param name="logoUrl">Used to override logo used in email notifications</param>
+        public static AuditMessage Build(HttpRequest request, string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
         {
             AuditMessage message = new AuditMessage();
 
@@ -25,6 +36,16 @@ namespace ThisData
                 message.UserAgent = request.UserAgent;
                 message.IPAddress = GetIpAddress(request);
                 message.User = GetUserDetails(request, userId, name, email, mobile);
+
+                // Source options are only supported if source name is provided
+                if (!String.IsNullOrEmpty(source))
+                {
+                    message.Source = new SourceOptions()
+                    {
+                        Name = source,
+                        LogoUrl = logoUrl
+                    };
+                }
             }
             catch (Exception e)
             {
@@ -101,6 +122,13 @@ namespace ThisData
                     {
                         strIp = ipParts[0];
                     }
+                }
+
+                // address is mandatory so if we have failed to get an address
+                // we can assume its probably local testing
+                if (String.IsNullOrEmpty(strIp))
+                {
+                    strIp = "127.0.0.1";
                 }
             }
             catch (Exception ex)

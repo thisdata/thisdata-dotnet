@@ -16,5 +16,8 @@ namespace ThisData.Models
 
         [DataMember(Name = "user")]
         public UserDetails User { get; set; }
+
+        [DataMember(Name = "source")]
+        public SourceOptions Source { get; set; }
     }
 }

@@ -28,9 +28,11 @@ namespace ThisData
         /// <param name="name">The full name of the user</param>
         /// <param name="email">The users email address for sending notifications</param>
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
-        public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "")
+        /// <param name="source">Used to indicate the source of the event and override company or app name in audit log and notifications</param>
+        /// <param name="logoUrl">Used to override logo used in email notifications</param>
+        public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
         {
-            _currentAuditMessage = BuildAuditMessage(verb, userId, name, email, mobile);
+            _currentAuditMessage = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl);
             Send(_currentAuditMessage);
         }
 
@@ -42,9 +44,11 @@ namespace ThisData
         /// <param name="name">The full name of the user</param>
         /// <param name="email">The users email address for sending notifications</param>
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
-        public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "")
+        /// <param name="source">Used to indicate the source of the event and override company or app name in audit log and notifications</param>
+        /// <param name="logo_url">Used to override logo used in email notifications</param>
+        public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
         {
-            AuditMessage message = BuildAuditMessage(verb, userId, name, email, mobile);
+            AuditMessage message = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl);
 
             ThreadPool.QueueUserWorkItem(c =>
             {
@@ -62,7 +66,7 @@ namespace ThisData
 
         #region Private
 
-        private AuditMessage BuildAuditMessage(string verb, string userId = "", string name = "", string email = "", string mobile = "")
+        private AuditMessage BuildAuditMessage(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
         {
             AuditMessage message = null;
             HttpContext context = HttpContext.Current;
@@ -80,7 +84,7 @@ namespace ThisData
 
                 if (request != null)
                 {
-                    message = AuditMessageBuilder.Build(request, verb, userId, name, email, mobile);
+                    message = AuditMessageBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl);
                 }
             }
 

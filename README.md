@@ -26,12 +26,13 @@ client.TrackAsync("log-in", userId: "john123455", name: "John Titor", email: "jo
 * `name` - string The full name of the user
 * `email` - string - An email address for sending unusual activity alerts to
 * `mobile` - E.164 format - An mobile number for sending unusual activity SMS alerts to. e.g. +15555555555
+* `source` - Used to indicate the source of the event and override company or app name in audit log and notifications
+* `logoUrl` - Used to override logo used in email notifications
 
 ### Event Types
-* `log-in` - A successful login
-* `log-in-denied` - A failed login
-* `password-reset-attempt` - Requested to change password
-* `password-reset-success` - Successfully changed password
+Event types are called `Verbs` and are available as constants e.g. `AuditMessageVerbs.LOG_IN`
+
+For a full list of supported verbs see http://help.thisdata.com/v1.0/docs/verbs
 
 ## API Documentation
 
