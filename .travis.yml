@@ -1,2 +1,5 @@
 language: csharp
 solution: ThisData.Net.sln
+script:
+  - xbuild /p:Configuration=Release ThisData.Net.sln
+  - mono ./testrunner/NUnit.Runners.*/tools/nunit-console.exe ./tests/bin/Release/ThisData.Net.Tests.dll
