@@ -1,4 +1,4 @@
-ThisData.NET
+ThisData.NET [![Build Status](https://travis-ci.org/thisdata/thisdata-dotnet.png?branch=master)](https://travis-ci.org/thisdata/thisdata-dotnet)
 =============
 
 ThisData.NET is a .NET / C# client for the ThisData Login Intelligence API (https://thisdata.com).
