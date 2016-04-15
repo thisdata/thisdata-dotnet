@@ -2,4 +2,4 @@ language: csharp
 solution: ThisData.Net.sln
 script:
   - xbuild /p:Configuration=Release ThisData.Net.sln
-  - mono ./packages/NUnit.Runners.*/tools/nunit-console.exe ./tests/bin/Release/ThisData.Net.Tests.dll
+  - mono ./packages/NUnit.ConsoleRunner.*/tools/nunit3-console.exe ./tests/bin/Release/ThisData.Net.Tests.dll
