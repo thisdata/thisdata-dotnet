@@ -3,6 +3,8 @@ using System.Threading;
 using System.Text;
 using System.Net;
 using System.Web;
+using System.Security.Cryptography;
+using System.IO;
 
 using ThisData.Models;
 
@@ -64,15 +66,73 @@ namespace ThisData
             });
         }
 
+        /// <summary>
+        /// Validates a webhook payload using shared secret
+        /// </summary>
+        /// <param name="secret"></param>
+        /// <returns></returns>
+        public bool ValidateWebhook(string secret)
+        {
+            HttpRequest request = GetHttpRequest();
+            string signature = request.Headers["X-Signature"];
+
+            if (String.IsNullOrEmpty(signature))
+            {
+                // No signature used
+                return true;
+            }
+            else
+            {
+                // Validate the signature
+                return ValidateWebhook(secret, signature, GetHttpRequestBody(request));
+            }
+        }
+
+        public bool ValidateWebhook(string secret, string signature, string payload)
+        {
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            byte[] key = encoding.GetBytes(secret);
+            byte[] payloadBytes = encoding.GetBytes(payload);
+
+            using (HMACSHA512 hmac = new HMACSHA512(key))
+            {
+                byte[] hmacBytes = hmac.ComputeHash(payloadBytes);
+                string payloadSignature = BitConverter.ToString(hmacBytes).Replace("-", "");
+                return signature.Equals(payloadSignature, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
         #region Private
 
         private AuditMessage BuildAuditMessage(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
         {
             AuditMessage message = null;
+            HttpRequest request = GetHttpRequest();
+            
+            if (request != null)
+            {
+                message = AuditMessageBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl);
+            }
+
+            return message;
+        }
+
+        private string GetHttpRequestBody(HttpRequest request)
+        {
+            string body = "";
+            using (StreamReader reader = new StreamReader(request.InputStream))
+            {
+                body = reader.ReadToEnd();
+            }
+            return body;
+        }
+
+        private HttpRequest GetHttpRequest()
+        {
+            HttpRequest request = null;
             HttpContext context = HttpContext.Current;
             if (context != null)
             {
-                HttpRequest request = null;
                 try
                 {
                     request = context.Request;
@@ -81,14 +141,9 @@ namespace ThisData
                 {
                     System.Diagnostics.Trace.WriteLine("Error retrieving HttpRequest {0}", ex.Message);
                 }
-
-                if (request != null)
-                {
-                    message = AuditMessageBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl);
-                }
             }
 
-            return message;
+            return request;
         }
 
         protected WebClient CreateWebClient()
