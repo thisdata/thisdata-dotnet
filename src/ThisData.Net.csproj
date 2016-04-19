@@ -46,7 +46,6 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="Defaults.cs" />
-    <None Include="LICENSE" />
     <Compile Include="Models\AuditMessage.cs" />
     <Compile Include="Models\SourceOptions.cs" />
     <Compile Include="Models\UserDetails.cs" />
@@ -56,7 +55,6 @@
     <Compile Include="SimpleJson.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="README.md" />
     <None Include="ThisData.Net.nuspec">
       <SubType>Designer</SubType>
     </None>
