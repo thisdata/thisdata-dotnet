@@ -69,7 +69,7 @@ namespace ThisData
         /// <summary>
         /// Validates a webhook payload using shared secret
         /// </summary>
-        /// <param name="secret"></param>
+        /// <param name="secret">A secret string entered via ThisData settings page</param>
         /// <returns></returns>
         public bool ValidateWebhook(string secret)
         {
@@ -88,6 +88,13 @@ namespace ThisData
             }
         }
 
+        /// <summary>
+        /// Validates a webhook payload using shared secret
+        /// </summary>
+        /// <param name="secret">A secret string entered via ThisData settings page</param>
+        /// <param name="signature">A signature from the X-Signature header on a request</param>
+        /// <param name="payload">The webhook body</param>
+        /// <returns></returns>
         public bool ValidateWebhook(string secret, string signature, string payload)
         {
             ASCIIEncoding encoding = new ASCIIEncoding();
@@ -100,6 +107,15 @@ namespace ThisData
                 string payloadSignature = BitConverter.ToString(hmacBytes).Replace("-", "");
                 return signature.Equals(payloadSignature, StringComparison.OrdinalIgnoreCase);
             }
+        }
+
+        /// <summary>
+        /// The webhook body content from a POST request
+        /// </summary>
+        /// <returns></returns>
+        public string GetWebhookPayload()
+        {
+            return GetHttpRequestBody(GetHttpRequest());
         }
 
         #region Private
