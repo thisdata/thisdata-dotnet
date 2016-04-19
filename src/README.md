@@ -34,6 +34,13 @@ Event types are called `Verbs` and are available as constants e.g. `AuditMessage
 
 For a full list of supported verbs see http://help.thisdata.com/v1.0/docs/verbs
 
+### Webhooks
+For convenience you can validate webhooks sent by ThisData using the `ValidateWebhook` method. It will return a boolean indicating if the signature included in the webhook header matches with the signed webhook body using your secret key. 
+```
+client.ValidateWebhook("your-secret")
+```
+For more information about types of webhooks you can recieve see http://help.thisdata.com/docs/webhooks
+
 ## API Documentation
 
 API Documentation is available at [http://help.thisdata.com/docs/apiv1events](http://help.thisdata.com/docs/apiv1events).
