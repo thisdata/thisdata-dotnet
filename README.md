@@ -39,6 +39,9 @@ For convenience you can validate webhooks sent by ThisData using the `ValidateWe
 ```
 client.ValidateWebhook("your-secret")
 ```
+
+To extract the webhook body use the `GetWebhookPayload` method which will return a json string.
+
 For more information about types of webhooks you can recieve see http://help.thisdata.com/docs/webhooks
 
 ## API Documentation
