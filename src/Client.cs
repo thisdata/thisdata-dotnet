@@ -134,7 +134,7 @@ namespace ThisData
                     id = context.Session.SessionID;
                 }
             }
-            catch (HttpException ex)
+            catch (Exception ex)
             {
                 System.Diagnostics.Trace.WriteLine("Error retrieving SessionId {0}", ex.Message);
             }
