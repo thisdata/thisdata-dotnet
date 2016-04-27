@@ -46,7 +46,19 @@ namespace ThisData.Net.Tests
         [Test]
         public void Track_EventWithUserId()
         {
+            Assert.DoesNotThrow(() => _client.Track("log-in", userId: "123456"));
+        }
+
+        [Test]
+        public void Track_EventWithoutUserId()
+        {
             Assert.DoesNotThrow(() => _client.Track("log-in"));
+        }
+
+        [Test]
+        public void GetSessionId_DoesNotExplodeWithNoSession()
+        {
+            Assert.DoesNotThrow(() => _client.GetSessionId());
         }
     }
 }

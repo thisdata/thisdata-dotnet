@@ -124,7 +124,12 @@ namespace ThisData
         {
             AuditMessage message = null;
             HttpRequest request = GetHttpRequest();
-            
+
+            if (String.IsNullOrEmpty(userId))
+            {
+                userId = GetSessionId();
+            }
+
             if (request != null)
             {
                 message = AuditMessageBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl);
@@ -160,6 +165,25 @@ namespace ThisData
             }
 
             return request;
+        }
+
+        public string GetSessionId()
+        {
+            string id = String.Empty;
+            HttpContext context = HttpContext.Current;
+            if (context != null)
+            {
+                try
+                {
+                    id = context.Session.SessionID;
+                }
+                catch (NullReferenceException ex)
+                {
+                    System.Diagnostics.Trace.WriteLine("Error retrieving SessionId {0}", ex.Message);
+                }
+            }
+
+            return id;
         }
 
         protected WebClient CreateWebClient()

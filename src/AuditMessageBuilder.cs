@@ -55,13 +55,13 @@ namespace ThisData
             return message;
         }
 
-        private static UserDetails GetUserDetails(HttpRequest request, string userId = "", string name = "", string email = "", string mobile = "")
+        public static UserDetails GetUserDetails(HttpRequest request, string userId = "", string name = "", string email = "", string mobile = "")
         {
             UserDetails user = new UserDetails();
 
             try
             {
-                user.Id = String.IsNullOrEmpty(userId) ? request.LogonUserIdentity.Name : userId;
+                user.Id = String.IsNullOrEmpty(userId) ? "anonymous" : userId;
                 user.Name = name;
                 user.Email = email;
                 user.Mobile = mobile;
@@ -74,7 +74,7 @@ namespace ThisData
             return user;
         }
 
-        private static string GetIpAddress(HttpRequest request)
+        public static string GetIpAddress(HttpRequest request)
         {
             string strIp = null;
 
@@ -139,7 +139,7 @@ namespace ThisData
             return strIp;
         }
 
-        private static bool IsValidIpAddress(string strIp)
+        public static bool IsValidIpAddress(string strIp)
         {
             if (strIp != null)
             {
