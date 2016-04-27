@@ -158,7 +158,7 @@ namespace ThisData
                 {
                     request = context.Request;
                 }
-                catch (HttpException ex)
+                catch (Exception ex)
                 {
                     System.Diagnostics.Trace.WriteLine("Error retrieving HttpRequest {0}", ex.Message);
                 }
@@ -177,7 +177,7 @@ namespace ThisData
                 {
                     id = context.Session.SessionID;
                 }
-                catch (NullReferenceException ex)
+                catch (Exception ex)
                 {
                     System.Diagnostics.Trace.WriteLine("Error retrieving SessionId {0}", ex.Message);
                 }
