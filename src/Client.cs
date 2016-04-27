@@ -118,6 +118,30 @@ namespace ThisData
             return GetHttpRequestBody(GetHttpRequest());
         }
 
+        /// <summary>
+        /// Returns the current session id if available
+        /// </summary>
+        /// <returns></returns>
+        public string GetSessionId()
+        {
+            string id = String.Empty;
+
+            try
+            {
+                HttpContext context = HttpContext.Current;
+                if (context != null)
+                {
+                    id = context.Session.SessionID;
+                }
+            }
+            catch (HttpException ex)
+            {
+                System.Diagnostics.Trace.WriteLine("Error retrieving SessionId {0}", ex.Message);
+            }
+
+            return id;
+        }
+
         #region Private
 
         private AuditMessage BuildAuditMessage(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
@@ -165,25 +189,6 @@ namespace ThisData
             }
 
             return request;
-        }
-
-        public string GetSessionId()
-        {
-            string id = String.Empty;
-            HttpContext context = HttpContext.Current;
-            if (context != null)
-            {
-                try
-                {
-                    id = context.Session.SessionID;
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Trace.WriteLine("Error retrieving SessionId {0}", ex.Message);
-                }
-            }
-
-            return id;
         }
 
         protected WebClient CreateWebClient()
