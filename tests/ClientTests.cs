@@ -56,9 +56,11 @@ namespace ThisData.Net.Tests
         }
 
         [Test]
-        public void GetSessionId_DoesNotExplodeWithNoSession()
+        public void GetSessionId_WhenNoSessionAvailable()
         {
-            Assert.DoesNotThrow(() => _client.GetSessionId());
+            string id = _client.GetSessionId();
+
+            Assert.AreEqual(string.Empty, id);
         }
     }
 }
