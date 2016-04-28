@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace ThisData.Models
 {
     [DataContract]
-    public class UserDetails
+    public class Profile
     {
         /// <summary>
         /// A unique identifier for the end user

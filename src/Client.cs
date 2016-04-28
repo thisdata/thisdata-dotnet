@@ -15,7 +15,7 @@ namespace ThisData
         private string _apiKey;
 
         [ThreadStatic]
-        private static AuditMessage _currentAuditMessage;
+        private static Event _currentAuditMessage;
 
         public Client(string apiKey)
         {
@@ -50,7 +50,7 @@ namespace ThisData
         /// <param name="logo_url">Used to override logo used in email notifications</param>
         public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
         {
-            AuditMessage message = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl);
+            Event message = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl);
 
             ThreadPool.QueueUserWorkItem(c =>
             {
@@ -64,28 +64,6 @@ namespace ThisData
                     System.Diagnostics.Trace.WriteLine(string.Format("Error sending async audit message {0}", ex.Message));
                 }
             });
-        }
-
-        /// <summary>
-        /// Validates a webhook payload using shared secret
-        /// </summary>
-        /// <param name="secret">A secret string entered via ThisData settings page</param>
-        /// <returns></returns>
-        public bool ValidateWebhook(string secret)
-        {
-            HttpRequest request = GetHttpRequest();
-            string signature = request.Headers["X-Signature"];
-
-            if (String.IsNullOrEmpty(signature))
-            {
-                // No signature used
-                return true;
-            }
-            else
-            {
-                // Validate the signature
-                return ValidateWebhook(secret, signature, GetHttpRequestBody(request));
-            }
         }
 
         /// <summary>
@@ -112,10 +90,30 @@ namespace ThisData
         /// <summary>
         /// The webhook body content from a POST request
         /// </summary>
-        /// <returns></returns>
-        public string GetWebhookPayload()
+        /// <returns>The webhook body as json string</returns>
+        public WebhookPayload GetWebhookPayload()
         {
-            return GetHttpRequestBody(GetHttpRequest());
+            return DeserializeWebhookPayload(GetHttpRequestBody());
+        }
+
+        /// <summary>
+        /// The validated webhook body content from a POST request
+        /// </summary>
+        /// <param name="secret">A secret string entered via ThisData settings page</param>
+        /// <returns>Null if invalid or the webhook body as json string if valid</returns>
+        public WebhookPayload GetWebhookPayload(string secret)
+        {
+            HttpRequest request = GetHttpRequest();
+            string signature = request.Headers["X-Signature"];
+            string json = GetHttpRequestBody();
+
+            if (ValidateWebhook(secret, signature, json))
+            {
+                // Its valid
+                return DeserializeWebhookPayload(json);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -144,9 +142,14 @@ namespace ThisData
 
         #region Private
 
-        private AuditMessage BuildAuditMessage(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
+        private WebhookPayload DeserializeWebhookPayload(string json)
         {
-            AuditMessage message = null;
+            return SimpleJson.DeserializeObject<WebhookPayload>(json, new DataContractJsonSerializerStrategy());
+        }
+
+        private Event BuildAuditMessage(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
+        {
+            Event message = null;
             HttpRequest request = GetHttpRequest();
 
             if (String.IsNullOrEmpty(userId))
@@ -156,19 +159,25 @@ namespace ThisData
 
             if (request != null)
             {
-                message = AuditMessageBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl);
+                message = EventBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl);
             }
 
             return message;
         }
 
-        private string GetHttpRequestBody(HttpRequest request)
+        private string GetHttpRequestBody()
         {
+            HttpRequest request = GetHttpRequest();
             string body = "";
-            using (StreamReader reader = new StreamReader(request.InputStream))
+
+            if (request != null)
             {
-                body = reader.ReadToEnd();
+                using (StreamReader reader = new StreamReader(request.InputStream))
+                {
+                    body = reader.ReadToEnd();
+                }
             }
+
             return body;
         }
 
@@ -200,7 +209,7 @@ namespace ThisData
           return client;
         }
 
-        private void Send(AuditMessage message)
+        private void Send(Event message)
         {
             string endpoint = string.Format("{0}?api_key={1}", Defaults.ApiEndpoint, _apiKey);
             string payload = null;

@@ -35,12 +35,15 @@ Event types are called `Verbs` and are available as constants e.g. `AuditMessage
 For a full list of supported verbs see http://help.thisdata.com/v1.0/docs/verbs
 
 ### Webhooks
-For convenience you can validate webhooks sent by ThisData using the `ValidateWebhook` method. It will return a boolean indicating if the signature included in the webhook header matches with the signed webhook body using your secret key. 
+To extract the webhook body use the `GetWebhookPayload` method which will return a `ThisData.Models.WebhookPayload` object.
+
 ```
-client.ValidateWebhook("your-secret")
+client.GetWebhookPayload("your-secret"); // Validates the webhook signature using a shared secret
+
+client.GetWebhookPayload(); // Gets webhook body with no validation
 ```
 
-To extract the webhook body use the `GetWebhookPayload` method which will return a json string.
+
 
 For more information about types of webhooks you can recieve see http://help.thisdata.com/docs/webhooks
 

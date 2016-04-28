@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace ThisData.Models
 {
     [DataContract]
-    public class AuditMessage
+    public class Event
     {
         [DataMember (Name = "verb")]
         public string Verb { get; set; }
@@ -15,9 +15,10 @@ namespace ThisData.Models
         public string UserAgent { get; set; }
 
         [DataMember(Name = "user")]
-        public UserDetails User { get; set; }
+        public Profile User { get; set; }
 
         [DataMember(Name = "source")]
         public SourceOptions Source { get; set; }
     }
 }
+

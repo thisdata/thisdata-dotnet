@@ -5,7 +5,7 @@ namespace ThisData
     /// 
     /// Docs: http://help.thisdata.com/v1.0/docs/verbs
     /// </summary>
-    public class AuditMessageVerbs
+    public class Verbs
     {
         // Authentication
         public const string LOG_IN = "log-in";
@@ -25,5 +25,12 @@ namespace ThisData
         public const string PASSWORD_RESET_REQUEST = "password-reset-request";
         public const string PASSWORD_RESET = "password-reset";
         public const string PASSWORD_RESET_FAIL = "password-reset-fail";
+    }
+
+    /// <summary>
+    /// Deprecated. Use Verbs instead
+    /// </summary>
+    public class AuditMessageVerbs : Verbs
+    {
     }
 }

@@ -10,7 +10,7 @@ using ThisData.Models;
 
 namespace ThisData
 {
-    public class AuditMessageBuilder
+    public class EventBuilder
     {
         private static readonly Regex IpAddressRegex = new Regex(@"\A(?:\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b)(:[1-9][0-9]{0,4})?\z", RegexOptions.Compiled);
 
@@ -25,9 +25,9 @@ namespace ThisData
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
         /// <param name="source">Used to indicate the source of the event and override company or app name in audit log and notifications</param>
         /// <param name="logoUrl">Used to override logo used in email notifications</param>
-        public static AuditMessage Build(HttpRequest request, string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
+        public static Event Build(HttpRequest request, string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
         {
-            AuditMessage message = new AuditMessage();
+            Event message = new Event();
 
             message.Verb = verb;
 
@@ -55,9 +55,9 @@ namespace ThisData
             return message;
         }
 
-        public static UserDetails GetUserDetails(HttpRequest request, string userId = "", string name = "", string email = "", string mobile = "")
+        public static Profile GetUserDetails(HttpRequest request, string userId = "", string name = "", string email = "", string mobile = "")
         {
-            UserDetails user = new UserDetails();
+            Profile user = new Profile();
 
             try
             {

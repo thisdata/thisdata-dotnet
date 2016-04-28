@@ -9,7 +9,7 @@ using ThisData;
 namespace ThisData.Net.Tests
 {
     [TestFixture]
-    public class AuditMessageBuilderTests
+    public class EventBuilderTests
     {
         private HttpRequest _request;
 
@@ -24,19 +24,19 @@ namespace ThisData.Net.Tests
         [Test]
         public void IsValidIpAddress_WithInvalidIpAddress()
         {
-            Assert.IsFalse(AuditMessageBuilder.IsValidIpAddress("1234.123.123.123"));
+            Assert.IsFalse(EventBuilder.IsValidIpAddress("1234.123.123.123"));
         }
 
         [Test]
         public void ValidateWebhook_WithValidIpAddress()
         {
-            Assert.IsTrue(AuditMessageBuilder.IsValidIpAddress("123.123.123.123"));
+            Assert.IsTrue(EventBuilder.IsValidIpAddress("123.123.123.123"));
         }
 
         [Test]
         public void GetUserDetails_SetsAnonymousUserIdWhenNoneProvided()
         {
-            var user = AuditMessageBuilder.GetUserDetails(_request);
+            var user = EventBuilder.GetUserDetails(_request);
             StringAssert.AreEqualIgnoringCase("anonymous", user.Id);
         }
 
@@ -48,7 +48,7 @@ namespace ThisData.Net.Tests
             string email = "bird@thisdata.com";
             string mobile = "123456789";
             
-            var user = AuditMessageBuilder.GetUserDetails(_request, userId, name, email, mobile);
+            var user = EventBuilder.GetUserDetails(_request, userId, name, email, mobile);
 
             StringAssert.AreEqualIgnoringCase(userId, user.Id);
             StringAssert.AreEqualIgnoringCase(name, user.Name);
