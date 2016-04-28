@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.IO;
+using System.Diagnostics;
 
 using NUnit.Framework;
 
@@ -19,6 +20,8 @@ namespace ThisData.Net.Tests
         [SetUp]
         public void Setup()
         {
+            Trace.Listeners.Add(new ConsoleTraceListener());
+
             _client = new ThisData.Client("");
             _request = new HttpRequest(string.Empty, "https://thisdata.com", string.Empty);
             _signature = "291264d1d4b3857e872d67b7587d3702b28519a0e3ce689d688372b7d31f6af484439a1885f21650ac073e48119d496f44dc97d3dc45106409d345f057443c6b";
