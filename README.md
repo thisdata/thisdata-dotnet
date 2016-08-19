@@ -25,7 +25,7 @@ client.TrackAsync("log-in", userId: "john123455", name: "John Titor", email: "jo
 * `userId` - string - A unique identifier for the user
 * `name` - string The full name of the user
 * `email` - string - An email address for sending unusual activity alerts to
-* `mobile` - E.164 format - An mobile number for sending unusual activity SMS alerts to. e.g. +15555555555
+* `mobile` - E.164 format - A mobile number for sending unusual activity SMS alerts to. e.g. +15555555555
 * `source` - Used to indicate the source of the event and override company or app name in audit log and notifications
 * `logoUrl` - Used to override logo used in email notifications
 
@@ -45,7 +45,7 @@ client.GetWebhookPayload(); // Gets webhook body with no validation
 
 
 
-For more information about types of webhooks you can recieve see http://help.thisdata.com/docs/webhooks
+For more information about types of webhooks you can receive see http://help.thisdata.com/docs/webhooks
 
 ## API Documentation
 
