@@ -5,6 +5,11 @@ namespace ThisData.Models
     [DataContract]
     public class Event
     {
+        public Event()
+        {
+            this.Session = new Session();
+        }
+
         [DataMember (Name = "verb")]
         public string Verb { get; set; }
 
@@ -19,6 +24,9 @@ namespace ThisData.Models
 
         [DataMember(Name = "source")]
         public SourceOptions Source { get; set; }
+
+        [DataMember(Name = "session")]
+        public Session Session { get; set; }
     }
 }
 

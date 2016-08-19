@@ -48,6 +48,7 @@
     <Compile Include="Defaults.cs" />
     <Compile Include="Models\Alert.cs" />
     <Compile Include="Models\Event.cs" />
+    <Compile Include="Models\Session.cs" />
     <Compile Include="Models\SourceOptions.cs" />
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\WebhookPayload.cs" />

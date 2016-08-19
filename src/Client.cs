@@ -32,10 +32,20 @@ namespace ThisData
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
         /// <param name="source">Used to indicate the source of the event and override company or app name in audit log and notifications</param>
         /// <param name="logoUrl">Used to override logo used in email notifications</param>
-        public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
+        public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "",
+            string logoUrl = "", string sessionId = "", bool cookieExpected = false)
         {
-            _currentAuditMessage = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl);
+            _currentAuditMessage = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected);
             Send(_currentAuditMessage);
+        }
+
+        /// <summary>
+        /// Tracks an event to the ThisData API
+        /// </summary>
+        /// <param name="message">Valid ThisData event</param>
+        public void Track(Event message)
+        {
+            Send(message);
         }
 
         /// <summary>
@@ -48,9 +58,10 @@ namespace ThisData
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
         /// <param name="source">Used to indicate the source of the event and override company or app name in audit log and notifications</param>
         /// <param name="logo_url">Used to override logo used in email notifications</param>
-        public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
+        public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", 
+            string logoUrl = "", string sessionId = "", bool cookieExpected = false)
         {
-            Event message = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl);
+            Event message = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected);
 
             ThreadPool.QueueUserWorkItem(c =>
             {
@@ -99,10 +110,15 @@ namespace ThisData
         /// <summary>
         /// The validated webhook body content from a POST request
         /// </summary>
-        /// <param name="secret">A secret string entered via ThisData settings page</param>
+        /// <param name="secret">A secret string entered via ThisData settings page, Defaults to API key</param>
         /// <returns>Null if invalid or the webhook body as json string if valid</returns>
-        public WebhookPayload GetWebhookPayload(string secret)
+        public WebhookPayload GetWebhookPayload(string secret = "")
         {
+            if (string.IsNullOrEmpty(secret))
+            {
+                secret = _apiKey;
+            }
+
             HttpRequest request = GetHttpRequest();
             string signature = request.Headers["X-Signature"];
             string json = GetHttpRequestBody();
@@ -147,7 +163,8 @@ namespace ThisData
             return SimpleJson.DeserializeObject<WebhookPayload>(json, new DataContractJsonSerializerStrategy());
         }
 
-        private Event BuildAuditMessage(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
+        private Event BuildAuditMessage(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "",
+            string logoUrl = "", string sessionId = "", bool cookieExpected = false)
         {
             Event message = null;
             HttpRequest request = GetHttpRequest();
@@ -159,7 +176,7 @@ namespace ThisData
 
             if (request != null)
             {
-                message = EventBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl);
+                message = EventBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected);
             }
 
             return message;
