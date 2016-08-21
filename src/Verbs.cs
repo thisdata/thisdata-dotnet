@@ -25,6 +25,9 @@ namespace ThisData
         public const string PASSWORD_RESET_REQUEST = "password-reset-request";
         public const string PASSWORD_RESET = "password-reset";
         public const string PASSWORD_RESET_FAIL = "password-reset-fail";
+
+        // Verify API Only
+        public const string VERIFY = "verify";
     }
 
     /// <summary>

@@ -33,12 +33,15 @@ namespace ThisData
             message.Verb = verb;
             message.Session.Id = sessionId;
             message.Session.CookieExpected = cookieExpected;
+            message.User.Id = String.IsNullOrEmpty(userId) ? "anonymous" : userId;
+            message.User.Name = name;
+            message.User.Email = email;
+            message.User.Mobile = mobile;
 
             try
             {
                 message.UserAgent = request.UserAgent;
                 message.IPAddress = GetIpAddress(request);
-                message.User = GetUserDetails(request, userId, name, email, mobile);
                 message.Session.CookieId = GetCookieId(request);
 
                 // Source options are only supported if source name is provided
@@ -77,25 +80,6 @@ namespace ThisData
             }
 
             return cookieId;
-        }
-
-        public static Profile GetUserDetails(HttpRequest request, string userId = "", string name = "", string email = "", string mobile = "")
-        {
-            Profile user = new Profile();
-
-            try
-            {
-                user.Id = String.IsNullOrEmpty(userId) ? "anonymous" : userId;
-                user.Name = name;
-                user.Email = email;
-                user.Mobile = mobile;
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Trace.WriteLine("Failed to get basic user info: {0}", e.Message);
-            }
-
-            return user;
         }
 
         public static string GetIpAddress(HttpRequest request)

@@ -4,8 +4,10 @@ using System.IO;
 using System.Diagnostics;
 
 using NUnit.Framework;
+using Moq;
 
 using ThisData;
+using ThisData.Models;
 
 namespace ThisData.Net.Tests
 {
@@ -22,7 +24,12 @@ namespace ThisData.Net.Tests
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-            _client = new ThisData.Client("");
+            var httpsMock = new Mock<IHttpTransport>();
+            httpsMock.Setup(transport => transport.Post(It.IsAny<string>(), It.IsAny<Event>()));
+            httpsMock.Setup(transport => transport.Post<VerifyResult>(It.IsAny<string>(), It.IsAny<Event>()))
+                .Returns(new VerifyResult() { Score = 0.9 });
+
+            _client = new ThisData.Client("", httpsMock.Object);
             _request = new HttpRequest(string.Empty, "https://thisdata.com", string.Empty);
             _signature = "291264d1d4b3857e872d67b7587d3702b28519a0e3ce689d688372b7d31f6af484439a1885f21650ac073e48119d496f44dc97d3dc45106409d345f057443c6b";
             
@@ -38,6 +45,12 @@ namespace ThisData.Net.Tests
             string secret = "hello";
 
             Assert.IsTrue(_client.ValidateWebhook(secret, _signature, _payload));
+        }
+
+        [Test]
+        public void Verify_WithParams()
+        {
+            Assert.IsInstanceOf<VerifyResult>(_client.Verify(userId: "123456", name: "John Titor"));
         }
 
         [Test]

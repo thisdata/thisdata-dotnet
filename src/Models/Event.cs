@@ -7,6 +7,7 @@ namespace ThisData.Models
     {
         public Event()
         {
+            this.User = new Profile();
             this.Session = new Session();
         }
 

@@ -13,13 +13,25 @@ namespace ThisData
     public class Client 
     {
         private string _apiKey;
+        private string _trackEndpoint;
+        private string _verifyEndpoint;
 
         [ThreadStatic]
         private static Event _currentAuditMessage;
 
-        public Client(string apiKey)
+        private IHttpTransport _transport;
+
+        public Client(string apiKey, IHttpTransport transport)
         {
             _apiKey = apiKey;
+            _transport = transport;
+            _trackEndpoint = String.Format("{0}?api_key={1}", Defaults.TrackEndpoint, apiKey);
+            _verifyEndpoint = String.Format("{0}?api_key={1}", Defaults.VerifyEndpoint, apiKey);
+        }
+
+        public Client(string apiKey)
+            : this(apiKey, new HttpsTransport())
+        {
         }
 
         /// <summary>
@@ -32,11 +44,13 @@ namespace ThisData
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
         /// <param name="source">Used to indicate the source of the event and override company or app name in audit log and notifications</param>
         /// <param name="logoUrl">Used to override logo used in email notifications</param>
+        /// <param name="sessionId">If you use a database to track sessions, you can send us the session ID</param>
+        /// <param name="cookieExpected">Send true when using our optional Javascript tracking library, and we'll know to expect a cookie</param>
         public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "",
             string logoUrl = "", string sessionId = "", bool cookieExpected = false)
         {
             _currentAuditMessage = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected);
-            Send(_currentAuditMessage);
+            _transport.Post(_trackEndpoint, _currentAuditMessage);
         }
 
         /// <summary>
@@ -45,7 +59,7 @@ namespace ThisData
         /// <param name="message">Valid ThisData event</param>
         public void Track(Event message)
         {
-            Send(message);
+            _transport.Post(_trackEndpoint, _currentAuditMessage);
         }
 
         /// <summary>
@@ -58,6 +72,8 @@ namespace ThisData
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
         /// <param name="source">Used to indicate the source of the event and override company or app name in audit log and notifications</param>
         /// <param name="logo_url">Used to override logo used in email notifications</param>
+        /// <param name="sessionId">If you use a database to track sessions, you can send us the session ID</param>
+        /// <param name="cookieExpected">Send true when using our optional Javascript tracking library, and we'll know to expect a cookie</param> 
         public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", 
             string logoUrl = "", string sessionId = "", bool cookieExpected = false)
         {
@@ -68,13 +84,44 @@ namespace ThisData
                 try
                 {
                     _currentAuditMessage = message;
-                    Send(_currentAuditMessage);
+                    _transport.Post(_trackEndpoint, _currentAuditMessage);
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Trace.WriteLine(string.Format("Error sending async audit message {0}", ex.Message));
                 }
             });
+        }
+
+        /// <summary>
+        /// Get a risk score for user based on current context
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="name"></param>
+        /// <param name="email"></param>
+        /// <param name="mobile"></param>
+        /// <param name="source"></param>
+        /// <param name="logoUrl"></param>
+        /// <param name="sessionId"></param>
+        /// <param name="cookieExpected"></param>
+        /// <returns></returns>
+        public VerifyResult Verify(string userId = "", string name = "", string email = "", string mobile = "", string source = "", 
+            string sessionId = "", bool cookieExpected = false)
+        {
+            _currentAuditMessage = BuildAuditMessage(Verbs.VERIFY, userId, name, email, mobile, source, "", sessionId, cookieExpected);
+            return Verify(_currentAuditMessage);
+        }
+
+        /// <summary>
+        /// Get a risk score for user based on current context
+        /// </summary>
+        /// <param name="message">Current event context for the user</param>
+        /// <returns></returns>
+        public VerifyResult Verify(Event message)
+        {
+            _currentAuditMessage = message;
+            _currentAuditMessage.Verb = Verbs.VERIFY;
+            return _transport.Post<VerifyResult>(_verifyEndpoint, _currentAuditMessage);
         }
 
         /// <summary>
@@ -215,45 +262,6 @@ namespace ThisData
             }
 
             return request;
-        }
-
-        protected WebClient CreateWebClient()
-        {
-          var client = new WebClient();
-          client.Headers.Add("content-type", "application/json; charset=utf-8");
-          client.Encoding = System.Text.Encoding.UTF8;
-
-          return client;
-        }
-
-        private void Send(Event message)
-        {
-            string endpoint = string.Format("{0}?api_key={1}", Defaults.ApiEndpoint, _apiKey);
-            string payload = null;
-
-            try
-            {
-              payload = SimpleJson.SerializeObject(message);
-            }
-            catch (Exception ex)
-            {
-              System.Diagnostics.Trace.WriteLine(string.Format("Error serializing audit message {0}", ex.Message));
-            }
-
-            if (message != null)
-            {
-                try
-                {
-                    using (var client = CreateWebClient())
-                    {
-                        client.UploadString(endpoint, payload);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Trace.WriteLine(string.Format("Error sending audit activity to ThisData {0}", ex.Message));
-                }
-            }
         }
 
         #endregion

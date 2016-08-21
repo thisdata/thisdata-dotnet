@@ -36,24 +36,8 @@ namespace ThisData.Net.Tests
         [Test]
         public void GetUserDetails_SetsAnonymousUserIdWhenNoneProvided()
         {
-            var user = EventBuilder.GetUserDetails(_request);
-            StringAssert.AreEqualIgnoringCase("anonymous", user.Id);
-        }
-
-        [Test]
-        public void GetUserDetails_UsesAllSuppliedValues()
-        {
-            string userId = "1234";
-            string name = "Bird";
-            string email = "bird@thisdata.com";
-            string mobile = "123456789";
-            
-            var user = EventBuilder.GetUserDetails(_request, userId, name, email, mobile);
-
-            StringAssert.AreEqualIgnoringCase(userId, user.Id);
-            StringAssert.AreEqualIgnoringCase(name, user.Name);
-            StringAssert.AreEqualIgnoringCase(email, user.Email);
-            StringAssert.AreEqualIgnoringCase(mobile, user.Mobile);
+            var ev = EventBuilder.Build(_request, Verbs.LOG_IN);
+            StringAssert.AreEqualIgnoringCase("anonymous", ev.User.Id);
         }
 
         [Test]
