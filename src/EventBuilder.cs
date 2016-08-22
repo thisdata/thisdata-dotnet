@@ -25,17 +25,24 @@ namespace ThisData
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
         /// <param name="source">Used to indicate the source of the event and override company or app name in audit log and notifications</param>
         /// <param name="logoUrl">Used to override logo used in email notifications</param>
-        public static Event Build(HttpRequest request, string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", string logoUrl = "")
+        public static Event Build(HttpRequest request, string verb, string userId = "", string name = "", string email = "", string mobile = "", 
+            string source = "", string logoUrl = "", string sessionId = "", bool cookieExpected = false)
         {
             Event message = new Event();
 
             message.Verb = verb;
+            message.Session.Id = sessionId;
+            message.Session.CookieExpected = cookieExpected;
+            message.User.Id = String.IsNullOrEmpty(userId) ? "anonymous" : userId;
+            message.User.Name = name;
+            message.User.Email = email;
+            message.User.Mobile = mobile;
 
             try
             {
                 message.UserAgent = request.UserAgent;
                 message.IPAddress = GetIpAddress(request);
-                message.User = GetUserDetails(request, userId, name, email, mobile);
+                message.Session.CookieId = GetCookieId(request);
 
                 // Source options are only supported if source name is provided
                 if (!String.IsNullOrEmpty(source))
@@ -55,23 +62,24 @@ namespace ThisData
             return message;
         }
 
-        public static Profile GetUserDetails(HttpRequest request, string userId = "", string name = "", string email = "", string mobile = "")
+        public static string GetCookieId(HttpRequest request)
         {
-            Profile user = new Profile();
+            string cookieId = null;
 
             try
             {
-                user.Id = String.IsNullOrEmpty(userId) ? "anonymous" : userId;
-                user.Name = name;
-                user.Email = email;
-                user.Mobile = mobile;
+                var cookie = request.Cookies[Defaults.JavascriptCookieName];
+                if (cookie != null)
+                {
+                    cookieId = cookie.Value;
+                }
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.WriteLine("Failed to get basic user info: {0}", e.Message);
+                System.Diagnostics.Trace.WriteLine("Failed to get cookie: {0}", e.Message);
             }
 
-            return user;
+            return cookieId;
         }
 
         public static string GetIpAddress(HttpRequest request)

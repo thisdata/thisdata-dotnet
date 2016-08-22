@@ -36,24 +36,60 @@ namespace ThisData.Net.Tests
         [Test]
         public void GetUserDetails_SetsAnonymousUserIdWhenNoneProvided()
         {
-            var user = EventBuilder.GetUserDetails(_request);
-            StringAssert.AreEqualIgnoringCase("anonymous", user.Id);
+            var ev = EventBuilder.Build(_request, Verbs.LOG_IN);
+            StringAssert.AreEqualIgnoringCase("anonymous", ev.User.Id);
         }
 
         [Test]
-        public void GetUserDetails_UsesAllSuppliedValues()
+        public void CanBuildEventWithAllProperties()
         {
-            string userId = "1234";
-            string name = "Bird";
-            string email = "bird@thisdata.com";
-            string mobile = "123456789";
-            
-            var user = EventBuilder.GetUserDetails(_request, userId, name, email, mobile);
+            _request.Cookies.Add(new HttpCookie(Defaults.JavascriptCookieName, "cookie-monster"));
 
-            StringAssert.AreEqualIgnoringCase(userId, user.Id);
-            StringAssert.AreEqualIgnoringCase(name, user.Name);
-            StringAssert.AreEqualIgnoringCase(email, user.Email);
-            StringAssert.AreEqualIgnoringCase(mobile, user.Mobile);
+            var ev = EventBuilder.Build(
+                request: _request, 
+                verb: Verbs.LOG_IN,
+                userId: "1234",
+                name: "John Titor",
+                email: "john.titor@thisdata.com",
+                mobile: "555.123.4567",
+                source: "Titor Inc",
+                logoUrl: "http://thisdata.com/titor.png",
+                sessionId: "999session",
+                cookieExpected: true);
+
+            StringAssert.AreEqualIgnoringCase("log-in", ev.Verb);
+            StringAssert.AreEqualIgnoringCase(null, ev.UserAgent);
+            StringAssert.AreEqualIgnoringCase("1234", ev.User.Id);
+            StringAssert.AreEqualIgnoringCase("John Titor", ev.User.Name);
+            StringAssert.AreEqualIgnoringCase("555.123.4567", ev.User.Mobile);
+            StringAssert.AreEqualIgnoringCase("Titor Inc", ev.Source.Name);
+            StringAssert.AreEqualIgnoringCase("http://thisdata.com/titor.png", ev.Source.LogoUrl);
+            StringAssert.AreEqualIgnoringCase("999session", ev.Session.Id);
+            Assert.IsTrue(ev.Session.CookieExpected);
+            StringAssert.AreEqualIgnoringCase("cookie-monster", ev.Session.CookieId);
+        }
+
+        [Test]
+        public void CanBuildEventWithoutOptionalProperties()
+        {
+            var ev = EventBuilder.Build(
+                request: _request,
+                verb: Verbs.LOG_IN);
+
+            StringAssert.AreEqualIgnoringCase("log-in", ev.Verb);
+            StringAssert.AreEqualIgnoringCase(null, ev.UserAgent);
+        }
+
+        [Test]
+        public void CanBuildEventWithoutCookie()
+        {
+            _request.Cookies.Clear();
+
+            var ev = EventBuilder.Build(
+                request: _request,
+                verb: Verbs.LOG_IN);
+
+            StringAssert.AreEqualIgnoringCase(null, ev.Session.CookieId);
         }
     }
 }
