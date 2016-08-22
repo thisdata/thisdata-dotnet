@@ -28,6 +28,8 @@ client.TrackAsync("log-in", userId: "john123455", name: "John Titor", email: "jo
 * `mobile` - E.164 format - A mobile number for sending unusual activity SMS alerts to. e.g. +15555555555
 * `source` - Used to indicate the source of the event and override company or app name in audit log and notifications
 * `logoUrl` - Used to override logo used in email notifications
+* `sessionId` - If you use a database to track sessions, you can send us the session ID
+* `cookieExpected` - Send true when using our optional Javascript tracking library, and we'll know to expect a cookie
 
 ### Event Types
 Event types are called `Verbs` and are available as constants e.g. `AuditMessageVerbs.LOG_IN`
@@ -39,10 +41,15 @@ To extract the webhook body use the `GetWebhookPayload` method which will return
 
 ```
 client.GetWebhookPayload("your-secret"); // Validates the webhook signature using a shared secret
-
-client.GetWebhookPayload(); // Gets webhook body with no validation
 ```
 
+## Verify 
+Use the `Verify` method to enable contextual authentication in your app. It accepts the same parameters as the `Track` event with the exception of the event type/verb. 
+
+Verify will return a risk score between 0->1 which indicates our level confidence that the user is who they say they are. 
+
+0.0 - low risk/high confidence
+1.0 - high risk/low confidence 
 
 
 For more information about types of webhooks you can receive see http://help.thisdata.com/docs/webhooks

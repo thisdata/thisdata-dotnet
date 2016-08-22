@@ -2,16 +2,20 @@
 <package >
   <metadata>
     <id>ThisData.Net</id>
-    <version>1.1.6</version>
+    <version>1.1.7</version>
     <authors>ThisData</authors>
     <owners>ThisData</owners>
     <licenseUrl>https://github.com/revertio/thisdata-dotnet</licenseUrl>
     <projectUrl>https://github.com/revertio/thisdata-dotnet</projectUrl>
     <iconUrl>https://thisdata.com/favicon.ico</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>The .net client for the ThisData Login Intelligence API. Add an extra layer of security to your app and get notified of suspicious login behaviour</description>
-    <releaseNotes>Supports .Net frame 4.0 onwards</releaseNotes>
+    <description>The .net client for the ThisData API. Get contextual authentication and suspicious login detection for your apps</description>
+    <releaseNotes>
+      Supports .Net frame 4.0+
+    
+      Version 1.1.7 - Adds support for javascript cookie tracking and contextual authentication via Verify API. 
+    </releaseNotes>
     <copyright>Copyright 2016</copyright>
-    <tags>security login analytics anomaly detection</tags>
+    <tags>security login analytics anomaly detection contextual-authentication</tags>
   </metadata> 
 </package>
