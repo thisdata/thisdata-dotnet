@@ -5,6 +5,7 @@ using System.Net;
 using System.Web;
 using System.Security.Cryptography;
 using System.IO;
+using System.Collections.Specialized;
 
 using ThisData.Models;
 
@@ -25,12 +26,10 @@ namespace ThisData
         {
             _apiKey = apiKey;
             _transport = transport;
-            _trackEndpoint = String.Format("{0}?api_key={1}", Defaults.TrackEndpoint, apiKey);
-            _verifyEndpoint = String.Format("{0}?api_key={1}", Defaults.VerifyEndpoint, apiKey);
         }
 
         public Client(string apiKey)
-            : this(apiKey, new HttpsTransport())
+            : this(apiKey, new HttpsTransport(apiKey, Defaults.BaseUrl))
         {
         }
 
@@ -50,7 +49,7 @@ namespace ThisData
             string logoUrl = "", string sessionId = "", bool cookieExpected = false)
         {
             _currentAuditMessage = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected);
-            _transport.Post(_trackEndpoint, _currentAuditMessage);
+            _transport.Post(Defaults.EventsEndpoint, _currentAuditMessage);
         }
 
         /// <summary>
@@ -59,7 +58,7 @@ namespace ThisData
         /// <param name="message">Valid ThisData event</param>
         public void Track(Event message)
         {
-            _transport.Post(_trackEndpoint, _currentAuditMessage);
+            _transport.Post(Defaults.EventsEndpoint, _currentAuditMessage);
         }
 
         /// <summary>
@@ -84,7 +83,7 @@ namespace ThisData
                 try
                 {
                     _currentAuditMessage = message;
-                    _transport.Post(_trackEndpoint, _currentAuditMessage);
+                    _transport.Post(Defaults.EventsEndpoint, _currentAuditMessage);
                 }
                 catch (Exception ex)
                 {
@@ -121,8 +120,23 @@ namespace ThisData
         {
             _currentAuditMessage = message;
             _currentAuditMessage.Verb = Verbs.VERIFY;
-            return _transport.Post<VerifyResult>(_verifyEndpoint, _currentAuditMessage);
+            return _transport.Post<VerifyResult>(Defaults.VerifyEndpoint, _currentAuditMessage);
         }
+
+        public EventsResult GetEvents(string userId = "", string[] verbs = null, string source = "", int limit = 50, int offset = 0, DateTime? after = null, DateTime? before = null)
+        {
+            QueryStringBuilder query = new QueryStringBuilder();
+            query.Add("user_id", userId);
+            query.Add("verbs", verbs);
+            query.Add("source", source);
+            query.Add("limit", limit);
+            query.Add("offset", offset);
+            query.Add("before", before);
+            query.Add("after", after);
+
+            return _transport.Get<EventsResult>("/events", query.Params);
+        }
+
 
         /// <summary>
         /// Validates a webhook payload using shared secret

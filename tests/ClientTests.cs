@@ -74,6 +74,20 @@ namespace ThisData.Net.Tests
         }
 
         [Test]
+        public void GetEvents_WithoutParams()
+        {
+            Assert.DoesNotThrow(() => _client.GetEvents());
+        }
+
+        [Test]
+        public void GetEvents_WithtParams()
+        {
+            var verbs = new string[] { "log-in", "log-in-denied" };
+
+            Assert.DoesNotThrow(() => _client.GetEvents(userId: "johntitor", verbs: verbs));
+        }
+
+        [Test]
         public void GetSessionId_WhenNoSessionAvailable()
         {
             string id = _client.GetSessionId();
