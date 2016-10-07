@@ -45,10 +45,11 @@ namespace ThisData
         /// <param name="logoUrl">Used to override logo used in email notifications</param>
         /// <param name="sessionId">If you use a database to track sessions, you can send us the session ID</param>
         /// <param name="cookieExpected">Send true when using our optional Javascript tracking library, and we'll know to expect a cookie</param>
+        /// <param name="deviceId">A unique device identifier. Typically used for tracking mobile devices.</param>
         public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "",
-            string logoUrl = "", string sessionId = "", bool cookieExpected = false)
+            string logoUrl = "", string sessionId = "", bool cookieExpected = false, string deviceId = "")
         {
-            _currentAuditMessage = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected);
+            _currentAuditMessage = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected, deviceId);
             _transport.Post(Defaults.EventsEndpoint, _currentAuditMessage);
         }
 
@@ -73,10 +74,11 @@ namespace ThisData
         /// <param name="logo_url">Used to override logo used in email notifications</param>
         /// <param name="sessionId">If you use a database to track sessions, you can send us the session ID</param>
         /// <param name="cookieExpected">Send true when using our optional Javascript tracking library, and we'll know to expect a cookie</param> 
-        public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", 
-            string logoUrl = "", string sessionId = "", bool cookieExpected = false)
+        /// <param name="deviceId">A unique device identifier. Typically used for tracking mobile devices.</param> 
+        public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "",
+            string logoUrl = "", string sessionId = "", bool cookieExpected = false, string deviceId = "")
         {
-            Event message = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected);
+            Event message = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected, deviceId);
 
             ThreadPool.QueueUserWorkItem(c =>
             {
@@ -225,7 +227,7 @@ namespace ThisData
         }
 
         private Event BuildAuditMessage(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "",
-            string logoUrl = "", string sessionId = "", bool cookieExpected = false)
+            string logoUrl = "", string sessionId = "", bool cookieExpected = false, string deviceId = "")
         {
             Event message = null;
             HttpRequest request = GetHttpRequest();
@@ -237,7 +239,7 @@ namespace ThisData
 
             if (request != null)
             {
-                message = EventBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected);
+                message = EventBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected, deviceId);
             }
 
             return message;

@@ -11,6 +11,7 @@ namespace ThisData.Models
         {
             this.User = new Profile();
             this.Session = new Session();
+            this.Device = new Device();
         }
 
         [DataMember(Name = "verb")]

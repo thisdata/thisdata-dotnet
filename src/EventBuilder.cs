@@ -25,8 +25,8 @@ namespace ThisData
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
         /// <param name="source">Used to indicate the source of the event and override company or app name in audit log and notifications</param>
         /// <param name="logoUrl">Used to override logo used in email notifications</param>
-        public static Event Build(HttpRequest request, string verb, string userId = "", string name = "", string email = "", string mobile = "", 
-            string source = "", string logoUrl = "", string sessionId = "", bool cookieExpected = false)
+        public static Event Build(HttpRequest request, string verb, string userId = "", string name = "", string email = "", string mobile = "",
+            string source = "", string logoUrl = "", string sessionId = "", bool cookieExpected = false, string deviceId = "")
         {
             Event message = new Event();
 
@@ -37,6 +37,7 @@ namespace ThisData
             message.User.Name = name;
             message.User.Email = email;
             message.User.Mobile = mobile;
+            message.Device.Id = deviceId;
 
             try
             {
