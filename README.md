@@ -19,8 +19,9 @@ Find the point in your code just after a login success, failure or password rese
 We recommend you use the `TrackAsync` method to send data to the ThisData API 
 
 ```csharp
-public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "", 
-	string source = "", string logoUrl = "", string sessionId = "", bool cookieExpected = false, string deviceId = "")
+public void Track(string verb, string userId = "", string name = "", string email = "", 
+	string mobile = "", string source = "", string logoUrl = "", string sessionId = "", 
+	bool cookieExpected = false, string deviceId = "")
 ```
 
 To track a successful log-in
@@ -69,7 +70,7 @@ if(res.Score > 0.9){
 }
 ```
 
-### Get a list of Events
+## Get a list of Events
 You can get a list of events enriched with their risk score and location data for use in custom audit logs. 
 See the [docs for possible query filters and paging params](http://help.thisdata.com/docs/v1getevents).
 
@@ -87,7 +88,7 @@ string lastLoginCountry = EventsResult.Results[0].Location.Address.CountryName;
 ```
 
 
-### Webhooks
+## Webhooks
 To extract the webhook body use the `GetWebhookPayload` method which will return a `ThisData.Models.WebhookPayload` object.
 
 ```csharp
