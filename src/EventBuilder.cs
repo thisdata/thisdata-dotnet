@@ -25,6 +25,9 @@ namespace ThisData
         /// <param name="mobile">The users mobile phone number for sending SMS notifications</param>
         /// <param name="source">Used to indicate the source of the event and override company or app name in audit log and notifications</param>
         /// <param name="logoUrl">Used to override logo used in email notifications</param>
+        /// <param name="sessionId">If you use a database to track sessions, you can send us the session ID</param>
+        /// <param name="cookieExpected">Send true when using our optional Javascript tracking library, and we'll know to expect a cookie</param>  
+        /// <param name="deviceId">A unique device identifier. Typically used for tracking mobile devices.</param> 
         public static Event Build(HttpRequest request, string verb, string userId = "", string name = "", string email = "", string mobile = "",
             string source = "", string logoUrl = "", string sessionId = "", bool cookieExpected = false, string deviceId = "")
         {
