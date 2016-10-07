@@ -71,8 +71,7 @@ if(res.Score > 0.9){
 ```
 
 ## Get a list of Events
-You can get a list of events enriched with their risk score and location data for use in custom audit logs. 
-See the [docs for possible query filters and paging params](http://help.thisdata.com/docs/v1getevents).
+You can get a [list of events enriched with their risk score and location data]((http://help.thisdata.com/docs/v1getevents)) for use in custom audit logs.
 
 ```csharp
 public EventsResult GetEvents(string userId = "", string[] verbs = null, string source = "", 
