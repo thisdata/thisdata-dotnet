@@ -5,6 +5,7 @@ using System.Net;
 using System.Web;
 using System.Security.Cryptography;
 using System.IO;
+using System.Collections.Specialized;
 
 using ThisData.Models;
 
@@ -25,12 +26,10 @@ namespace ThisData
         {
             _apiKey = apiKey;
             _transport = transport;
-            _trackEndpoint = String.Format("{0}?api_key={1}", Defaults.TrackEndpoint, apiKey);
-            _verifyEndpoint = String.Format("{0}?api_key={1}", Defaults.VerifyEndpoint, apiKey);
         }
 
         public Client(string apiKey)
-            : this(apiKey, new HttpsTransport())
+            : this(apiKey, new HttpsTransport(apiKey, Defaults.BaseUrl))
         {
         }
 
@@ -46,11 +45,12 @@ namespace ThisData
         /// <param name="logoUrl">Used to override logo used in email notifications</param>
         /// <param name="sessionId">If you use a database to track sessions, you can send us the session ID</param>
         /// <param name="cookieExpected">Send true when using our optional Javascript tracking library, and we'll know to expect a cookie</param>
+        /// <param name="deviceId">A unique device identifier. Typically used for tracking mobile devices.</param>
         public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "",
-            string logoUrl = "", string sessionId = "", bool cookieExpected = false)
+            string logoUrl = "", string sessionId = "", bool cookieExpected = false, string deviceId = "")
         {
-            _currentAuditMessage = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected);
-            _transport.Post(_trackEndpoint, _currentAuditMessage);
+            _currentAuditMessage = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected, deviceId);
+            _transport.Post(Defaults.EventsEndpoint, _currentAuditMessage);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace ThisData
         /// <param name="message">Valid ThisData event</param>
         public void Track(Event message)
         {
-            _transport.Post(_trackEndpoint, _currentAuditMessage);
+            _transport.Post(Defaults.EventsEndpoint, _currentAuditMessage);
         }
 
         /// <summary>
@@ -74,17 +74,18 @@ namespace ThisData
         /// <param name="logo_url">Used to override logo used in email notifications</param>
         /// <param name="sessionId">If you use a database to track sessions, you can send us the session ID</param>
         /// <param name="cookieExpected">Send true when using our optional Javascript tracking library, and we'll know to expect a cookie</param> 
-        public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", 
-            string logoUrl = "", string sessionId = "", bool cookieExpected = false)
+        /// <param name="deviceId">A unique device identifier. Typically used for tracking mobile devices.</param> 
+        public void TrackAsync(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "",
+            string logoUrl = "", string sessionId = "", bool cookieExpected = false, string deviceId = "")
         {
-            Event message = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected);
+            Event message = BuildAuditMessage(verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected, deviceId);
 
             ThreadPool.QueueUserWorkItem(c =>
             {
                 try
                 {
                     _currentAuditMessage = message;
-                    _transport.Post(_trackEndpoint, _currentAuditMessage);
+                    _transport.Post(Defaults.EventsEndpoint, _currentAuditMessage);
                 }
                 catch (Exception ex)
                 {
@@ -121,8 +122,23 @@ namespace ThisData
         {
             _currentAuditMessage = message;
             _currentAuditMessage.Verb = Verbs.VERIFY;
-            return _transport.Post<VerifyResult>(_verifyEndpoint, _currentAuditMessage);
+            return _transport.Post<VerifyResult>(Defaults.VerifyEndpoint, _currentAuditMessage);
         }
+
+        public EventsResult GetEvents(string userId = "", string[] verbs = null, string source = "", int limit = 50, int offset = 0, DateTime? after = null, DateTime? before = null)
+        {
+            QueryStringBuilder query = new QueryStringBuilder();
+            query.Add("user_id", userId);
+            query.Add("verbs", verbs);
+            query.Add("source", source);
+            query.Add("limit", limit);
+            query.Add("offset", offset);
+            query.Add("before", before);
+            query.Add("after", after);
+
+            return _transport.Get<EventsResult>("/events", query.Params);
+        }
+
 
         /// <summary>
         /// Validates a webhook payload using shared secret
@@ -211,7 +227,7 @@ namespace ThisData
         }
 
         private Event BuildAuditMessage(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "",
-            string logoUrl = "", string sessionId = "", bool cookieExpected = false)
+            string logoUrl = "", string sessionId = "", bool cookieExpected = false, string deviceId = "")
         {
             Event message = null;
             HttpRequest request = GetHttpRequest();
@@ -223,7 +239,7 @@ namespace ThisData
 
             if (request != null)
             {
-                message = EventBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected);
+                message = EventBuilder.Build(request, verb, userId, name, email, mobile, source, logoUrl, sessionId, cookieExpected, deviceId);
             }
 
             return message;

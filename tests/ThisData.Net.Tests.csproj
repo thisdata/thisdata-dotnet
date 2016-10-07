@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="EventBuilderTests.cs" />
     <Compile Include="ClientTests.cs" />
+    <Compile Include="Models\EventsResultsTests.cs" />
     <Compile Include="Models\VerifyResultsTests.cs" />
     <Compile Include="Models\WebhookPayloadTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Stub\event_results.json" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
