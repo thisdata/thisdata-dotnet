@@ -19,8 +19,8 @@ Find the point in your code just after a login success, failure or password rese
 We recommend you use the `TrackAsync` method to send data to the ThisData API 
 
 ```csharp
-public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "", string source = "", 
-	string logoUrl = "", string sessionId = "", bool cookieExpected = false, string deviceId = "")
+public void Track(string verb, string userId = "", string name = "", string email = "", string mobile = "", 
+	string source = "", string logoUrl = "", string sessionId = "", bool cookieExpected = false, string deviceId = "")
 ```
 
 To track a successful log-in
@@ -74,7 +74,8 @@ You can get a list of events enriched with their risk score and location data fo
 See the [docs for possible query filters and paging params](http://help.thisdata.com/docs/v1getevents).
 
 ```csharp
-public GetEvents(string userId = "", string[] verbs = null, string source = "", int limit = 50, int offset = 0, DateTime? after = null, DateTime? before = null);
+public GetEvents(string userId = "", string[] verbs = null, string source = "", int limit = 50, int offset = 0, 
+	DateTime? after = null, DateTime? before = null);
 ```
 
 Get last successful log-in time and location for a user.
