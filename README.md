@@ -49,8 +49,8 @@ For a full list of supported verbs see http://help.thisdata.com/v1.0/docs/verbs
 Use the `Verify` method to enable contextual authentication in your app. It accepts the same parameters as the `Track` event with the exception of the event type/verb.
 
 ```js
-public VerifyResult Verify(string userId = "", string name = "", string email = "", string mobile = "", string source = "", 
-	string sessionId = "", bool cookieExpected = false)
+public VerifyResult Verify(string userId = "", string name = "", string email = "", string mobile = "", 
+	string source = "", string sessionId = "", bool cookieExpected = false)
 ```
 
 Verify will return a risk score between 0->1 which indicates our level confidence that the user is who they say they are.
@@ -62,7 +62,7 @@ Verify will return a risk score between 0->1 which indicates our level confidenc
 
 
 ```csharp
-VerifyResult res = thisdata.Verify(userId: "john12345", "deviceId": "xxx-xxx-xxx");
+VerifyResult res = thisdata.Verify(userId: "john12345", deviceId: "xxx-xxx-xxx");
 
 if(res.Score > 0.9){
 	// Step authentication, prompt for password or 2FA code
@@ -74,8 +74,8 @@ You can get a list of events enriched with their risk score and location data fo
 See the [docs for possible query filters and paging params](http://help.thisdata.com/docs/v1getevents).
 
 ```csharp
-public GetEvents(string userId = "", string[] verbs = null, string source = "", int limit = 50, int offset = 0, 
-	DateTime? after = null, DateTime? before = null);
+public EventsResult GetEvents(string userId = "", string[] verbs = null, string source = "", 
+	int limit = 50, int offset = 0, DateTime? after = null, DateTime? before = null);
 ```
 
 Get last successful log-in time and location for a user.
