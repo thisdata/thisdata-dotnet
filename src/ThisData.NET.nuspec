@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>The .net client for the ThisData API. Get contextual authentication and suspicious login detection for your apps</description>
     <releaseNotes>
-      Supports .Net frame 4.0+
+      Supports .Net frame 4.0+ 
 
       Version 1.1.8 - Helper for signing javascript params
       Version 1.1.8 - Getting location and risk score enriched events.
