@@ -14,8 +14,6 @@ namespace ThisData
     public class Client 
     {
         private string _apiKey;
-        private string _trackEndpoint;
-        private string _verifyEndpoint;
 
         [ThreadStatic]
         private static Event _currentAuditMessage;
