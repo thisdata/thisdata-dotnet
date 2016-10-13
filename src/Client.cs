@@ -162,6 +162,34 @@ namespace ThisData
         }
 
         /// <summary>
+        /// A helper for signing params that will be sent to ThisData via Javascript API
+        /// </summary>
+        /// <param name="payload">The stringified params that will be sent to ThisData</param>
+        /// <param name="secret">A secret for signing the payload, defaults to API Key</param>
+        /// <returns>A SHA256 signature of the payload</returns>
+        public string SignParams(string payload, string secret = "")
+        {
+            // Unless a secret has been set ThisData defaults to using API Key for signing
+            if (string.IsNullOrEmpty(secret))
+            {
+                secret = _apiKey;
+            }
+
+            string payloadSignature;
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            byte[] key = encoding.GetBytes(secret);
+            byte[] payloadBytes = encoding.GetBytes(payload);
+
+            using (HMACSHA256 hmac = new HMACSHA256(key))
+            {
+                byte[] hmacBytes = hmac.ComputeHash(payloadBytes);
+                payloadSignature = BitConverter.ToString(hmacBytes).Replace("-", "").ToLower();
+            }
+
+            return payloadSignature;
+        }
+
+        /// <summary>
         /// The webhook body content from a POST request
         /// </summary>
         /// <returns>The webhook body as json string</returns>
@@ -177,6 +205,7 @@ namespace ThisData
         /// <returns>Null if invalid or the webhook body as json string if valid</returns>
         public WebhookPayload GetWebhookPayload(string secret = "")
         {
+            // Unless a secret has been set ThisData defaults to using API Key for signing
             if (string.IsNullOrEmpty(secret))
             {
                 secret = _apiKey;

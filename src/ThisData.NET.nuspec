@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>ThisData.Net</id>
-    <version>1.1.8</version>
+    <version>1.1.9</version>
     <authors>ThisData</authors>
     <owners>ThisData</owners>
     <licenseUrl>https://github.com/revertio/thisdata-dotnet</licenseUrl>
@@ -13,8 +13,9 @@
     <releaseNotes>
       Supports .Net frame 4.0+
 
-      Version 1.1.8 - Adds support for getting location and risk score enriched events.
-      Version 1.1.7 - Adds support for javascript cookie tracking and contextual authentication via Verify API.
+      Version 1.1.8 - Helper for signing javascript params
+      Version 1.1.8 - Getting location and risk score enriched events.
+      Version 1.1.7 - Javascript cookie tracking and contextual authentication via Verify API.
     </releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>security login analytics anomaly detection contextual-authentication</tags>
